@@ -2,7 +2,7 @@
 var express = require('express');
 var router = express.Router();
 
-var products = [];      // Temporal "database"
+var products = {};      // Temporal "database"
 
 /* POST a new product. */
 router.post('/', function(req, res, next) {
@@ -25,5 +25,13 @@ router.post('/', function(req, res, next) {
   res.status(201)
      .json({"product": products[product._id]});
 });
+
+/* GET all products. */
+router.get('/', function(req, res, next) {
+    console.log("Product.GET: " + req.body);
+  
+    res.status(200)
+       .json({"products": products});
+  });
 
 module.exports = router;
