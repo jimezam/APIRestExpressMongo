@@ -30,8 +30,39 @@ router.post('/', function(req, res, next) {
 router.get('/', function(req, res, next) {
     console.log("Product.GET: " + req.body);
   
+    var productValues = Object.keys(products).map(k => products[k]);
+
     res.status(200)
-       .json({"products": products});
+       .json({"products": productValues});
+  });
+
+
+/* GET a particular product. */
+router.get('/:id', function(req, res, next) {
+    console.log("Product.GET: " + req.params.id);
+  
+    if(!req.params.id)
+    {
+      res.status(403)
+         .json({
+              "error": true,
+              "message": "There is no 'id' parameter!"
+          });
+    }
+
+    let product = products[req.params.id];
+
+    if(product === undefined)
+    {
+        res.status(404)
+        .json({
+             "error": true,
+             "message": "Product not found.  id=" + req.params.id
+         });
+   }
+
+    res.status(200)
+       .json({"product": product});
   });
 
 module.exports = router;
