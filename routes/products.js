@@ -34,7 +34,7 @@ router.get('/', function(req, res, next) {
 
     res.status(200)
        .json({"products": productValues});
-  });
+});
 
 
 /* GET a particular product. */
@@ -57,13 +57,13 @@ router.get('/:id', function(req, res, next) {
         res.status(404)
         .json({
              "error": true,
-             "message": "Product not found.  id=" + req.params.id
+             "message": "Product not found. id=" + req.params.id
          });
    }
 
     res.status(200)
        .json({"product": product});
-  });
+});
 
 /* PUT a particular product. */
 router.put('/:id', function(req, res, next) {
@@ -93,6 +93,37 @@ router.put('/:id', function(req, res, next) {
 
     res.status(200)
        .json({"product": product});
-  });
+});
 
-  module.exports = router;
+/* DELETE a particular product. */
+router.delete('/:id', function(req, res, next) {
+    console.log("Product.DELETE: " + req.params.id);
+  
+    if(!req.params.id)
+    {
+      res.status(403)
+         .json({
+              "error": true,
+              "message": "There is no 'id' parameter!"
+          });
+    }
+
+    var id = parseInt(req.params.id, 10);
+    var product = products[id];
+
+    if(product === undefined)
+    {
+        res.status(404)
+        .json({
+             "error": true,
+             "message": "Product not found. id=" + req.params.id
+         });
+   }
+
+    delete (products[id]);
+
+    res.status(200)
+       .json({"product": product});
+});
+  
+module.exports = router;
