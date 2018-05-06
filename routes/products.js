@@ -65,4 +65,34 @@ router.get('/:id', function(req, res, next) {
        .json({"product": product});
   });
 
-module.exports = router;
+/* PUT a particular product. */
+router.put('/:id', function(req, res, next) {
+    console.log("Product.PUT: " + req.params.id);
+  
+    if(!req.body)
+    {
+      res.status(403)
+         .json({
+              "error": true,
+              "message": "Request body is empty!"
+          });
+    }
+  
+    if(!req.params.id)
+    {
+      res.status(403)
+         .json({
+              "error": true,
+              "message": "There is no 'id' parameter!"
+          });
+    }
+
+    let product = req.body;
+    product._id = parseInt(req.params.id, 10);
+    products[product._id] = product;
+
+    res.status(200)
+       .json({"product": product});
+  });
+
+  module.exports = router;
