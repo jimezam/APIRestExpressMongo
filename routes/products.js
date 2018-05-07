@@ -2,28 +2,54 @@
 var express = require('express');
 var router = express.Router();
 
+var Product = require('../database/models/Product');        // add
+
 var products = {};      // Temporal "database"
 
 /* POST a new product. */
 router.post('/', function(req, res, next) {
-  console.log("Product.CREATE: " + req.body);
+    console.log("Product.CREATE: " + req.body);
 
-  if(!req.body)
-  {
-    res.status(403)
-       .json({
-            "error": true,
-            "message": "Request body is empty!"
-        });
-  }
+    if(!req.body)
+    {
+      res.status(403)
+         .json({
+              "error": true,
+              "message": "Request body is empty!"
+          });
+    }
+    
+    // Mongoose
 
-  let product = req.body;
-  product._id = Date.now();
+    var params = req.body;
 
-  products[product._id] = product;
+    Product.create(params)
+        .then(product => {
+            res.status(201)
+               .json({"product": product});
 
-  res.status(201)
-     .json({"product": products[product._id]});
+            next();
+        }).catch(err => {
+            res.status(403)
+               .json({
+                   "error": true,
+                   "message": err
+               });     
+
+            next(err);
+    });
+
+    // /Mongoose
+
+    /*
+    let product = req.body;
+    product._id = Date.now();
+
+    products[product._id] = product;
+
+    res.status(201)
+        .json({"product": products[product._id]});
+    */
 });
 
 /* GET all products. */
@@ -35,7 +61,6 @@ router.get('/', function(req, res, next) {
     res.status(200)
        .json({"products": productValues});
 });
-
 
 /* GET a particular product. */
 router.get('/:id', function(req, res, next) {
