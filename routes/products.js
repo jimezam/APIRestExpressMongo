@@ -111,6 +111,15 @@ router.get('/:id', function(req, res, next) {
 
     Product.findOne({ _id: req.params.id })
         .then(product => {
+            if(product === null)
+            {
+                res.status(404)
+                   .json({
+                       "error": true,
+                       "message": "Product not found. id=" + req.params.id
+                });     
+            }
+
             res.status(200)
                .json({"product": product});
         }).catch(err =>{
