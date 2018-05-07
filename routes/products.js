@@ -4,7 +4,9 @@ var router = express.Router();
 
 var Product = require('../database/models/Product');        // add
 
+/*
 var products = {};      // Temporal "database"
+*/
 
 /* POST a new product. */
 router.post('/', function(req, res, next) {
@@ -205,6 +207,38 @@ router.delete('/:id', function(req, res, next) {
           });
     }
 
+    // Mongoose
+
+    // Doc: https://docs.mongodb.com/manual/reference/method/db.collection.findOneAndUpdate/
+
+    // example?
+
+    Product.findOneAndRemove({"_id": req.params.id}, {})
+        .then(product => {
+            if(product === null)
+            {
+                res.status(404)
+                   .json({
+                       "error": true,
+                       "message": "Product not found. id=" + req.params.id
+                });     
+            }
+
+            res.status(200)
+               .json({"product": product});
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500)
+               .json({
+                   "error": true,
+                   "message": err
+            });     
+    });
+
+    // /Mongoose    
+
+    /*
     var id = parseInt(req.params.id, 10);
     var product = products[id];
 
@@ -221,6 +255,7 @@ router.delete('/:id', function(req, res, next) {
 
     res.status(200)
        .json({"product": product});
+    */
 });
   
 module.exports = router;
