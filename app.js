@@ -8,6 +8,10 @@ var logger = require('morgan');
 /// var indexRouter = require('./routes/index');
 /// var usersRouter = require('./routes/users');
 
+// Environment type
+// *** Comment on production environment ***
+process.env.NODE_ENV = "development";
+
 var db = require('./database/config');    // add
 
 var indexRouter = require('./routes/index');  // add
@@ -50,6 +54,10 @@ app.use(function(err, req, res, next) {
   /// // render the error page
   /// res.status(err.status || 500);
   /// res.render('error');
+
+  console.log("ERROR: " + res.locals.error);
+  res.status(err.status || 500);
+  res.json(err);  
 });
 
 module.exports = app;
