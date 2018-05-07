@@ -21,6 +21,12 @@ router.post('/', function(req, res, next) {
     
     // Mongoose
 
+    // db.mycol.insert({
+    //     name: 'xxx', 
+    //     price: 100,
+    //     expiration: '2018-01-02'
+    // })
+
     var params = req.body;
 
     Product.create(params)
@@ -30,11 +36,12 @@ router.post('/', function(req, res, next) {
 
             next();
         }).catch(err => {
+            console.log(err);
             res.status(403)
                .json({
                    "error": true,
                    "message": err
-               });     
+            });     
 
             next(err);
     });
@@ -56,10 +63,33 @@ router.post('/', function(req, res, next) {
 router.get('/', function(req, res, next) {
     console.log("Product.GET: " + req.body);
   
+    // Mongoose
+    
+    // db.products.find()
+
+    Product.paginate({},{ page: req.query.page || 1, 
+                          limit: 10, 
+                          sort: {'_id': -1} })
+        .then(products => {
+            res.status(200)
+                .json({"products": products});
+        }).catch(err =>{
+            console.log(err);
+            res.status(400)
+               .json({
+                   "error": true,
+                   "message": err
+            });     
+        });
+
+    // /Mongoose
+
+    /*
     var productValues = Object.keys(products).map(k => products[k]);
 
     res.status(200)
        .json({"products": productValues});
+    */
 });
 
 /* GET a particular product. */
