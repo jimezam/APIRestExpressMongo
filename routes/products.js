@@ -33,8 +33,6 @@ router.post('/', function(req, res, next) {
         .then(product => {
             res.status(201)
                .json({"product": product});
-
-            next();
         }).catch(err => {
             console.log(err);
             res.status(403)
@@ -42,8 +40,6 @@ router.post('/', function(req, res, next) {
                    "error": true,
                    "message": err
             });     
-
-            next(err);
     });
 
     // /Mongoose
@@ -105,6 +101,25 @@ router.get('/:id', function(req, res, next) {
           });
     }
 
+    // Mongoose
+
+    // db.products.find({ _id: ObjectId(5aefa0b961e1cc2194b5ced5) });
+
+    Product.findOne({ _id: req.params.id })
+        .then(product => {
+            res.status(200)
+               .json({"product": product});
+        }).catch(err =>{
+            res.status(404)
+            .json({
+                 "error": true,
+                 "message": "Product not found. id=" + req.params.id
+             });
+    });
+
+    // /Mongoose
+
+    /*
     let product = products[req.params.id];
 
     if(product === undefined)
@@ -114,10 +129,11 @@ router.get('/:id', function(req, res, next) {
              "error": true,
              "message": "Product not found. id=" + req.params.id
          });
-   }
+    }
 
     res.status(200)
        .json({"product": product});
+    */
 });
 
 /* PUT a particular product. */
